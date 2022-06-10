@@ -2,7 +2,7 @@ import ffcClient from 'ffc-js-client-side-sdk';
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, store } from './store';
-import { IFeatureFlag, IFeatureFlagChange, IOption } from 'ffc-js-client-side-sdk/esm/types';
+import { IFeatureFlag, IFeatureFlagChange, IOption, IVariationOption } from 'ffc-js-client-side-sdk/esm/types';
 
 import { flagsDefaultValues, option } from './ffcConfig';
 
@@ -49,7 +49,8 @@ const _option: IOption = Object.assign(
     enableDataSync: true,
     bootstrap: Object.keys(flagsDefaultValues).map(k => ({
       id: k,
-      variation: flagsDefaultValues[k]
+      variation: flagsDefaultValues[k],
+      variationOptions: [] as IVariationOption[]
     })) as IFeatureFlag[]
   }, 
   option || {}
@@ -57,13 +58,16 @@ const _option: IOption = Object.assign(
   
 ffcClient.init(_option);
 
-ffcClient.on('ff_update', (changes: IFeatureFlagChange[]) => {
-  const flags = changes.reduce((acc, curr) => {
-        acc[curr.id] = curr.newValue;
-        return acc;
-    }, {} as {[key: string]: string});
-  
-    store.dispatch(updateFfcFlags(flags));
+ffcClient.on('ff_update', (changes: any[]) => {
+  if (changes.length > 0){
+    store.dispatch(updateFfcFlags({}));
+  }
+});
+
+ffcClient.waitUntilReady().then((data: any[]) => {
+  if (data.length) {
+    store.dispatch(updateFfcFlags({}));
+  }
 });
 
 
