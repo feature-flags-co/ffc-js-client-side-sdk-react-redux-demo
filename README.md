@@ -28,11 +28,17 @@ export const option: IOption = {
     devModePassword: 'thisisademo'
 }
 ```
-4. Results:
+4. Run
+```
+npm install
+npm run start
+```
+
+5. Results:
    1. Hello World
    ![Hello World](./assets/helloworld.jpg)
    2. Hello Universe
    ![Hello Universe](./assets/hellouniverse.jpg)
-   1. Activate counter module
+   3. Activate counter module
    ![Activate counter module](./assets/withcountermodule.jpg)
 
